@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="http://code.jquery.com/jquery-1.6.js" type="text/javascript"></script>
+		<script type="text/javascript" src="C:\Users\nyconfig\Desktop\dragresize\dragresize_commented_revised.js"></script>
+		<script>
+			var dragresize = new DragResize('dragresize', {minWidth: 50, minHeight: 50, minLeft: 20, minTop: 20, maxLeft: 600, maxTop: 600});
+			dragresize.isElement = function(elm){
+				if(elm.className && elm.className.indexOf('drsElement') > -1) return true;
+			};
+			dragresize.isHandle = function(elm){
+				if(elm.className && elm.className.indexOf('drsMoveHandle') > -1) return true;
+			};
+			dragresize.ondragfocus = function(){};
+			dragresize.ondragstart = function(isResize){};
+			dragresize.ondragmove = function(isResize){};
+			dragresize.ondragend = function(isResize){};
+			dragresize.ondragblur = function(){};
+			dragresize.apply(document);
+		</script>
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<style>
+			*{
+				padding:0;
+				margin:0;
+			}
+			body{
+				background:rgba(251,250,245,1);
+			}
+			#outerWrapper{
+				display:flex;
+				flex-direction: column;
+				align-items:center;
+			}
+			#header{
+				display:flex;
+				flex-direction: column;
+				align-items:center;
+				padding:10px 0 10px 0;
+				border-bottom:2px solid black;
+			}
+			#bodyWrapper{
+				display:flex;
+				flex-direction:row;
+				flex-wrap:wrap;
+				justify-content:center;
+				padding:10px 0 10px 0;
+			}
+			#myTable{
+				padding:10px;
+			}
+			#instructions{
+				overflow-y:scroll;
+				height:100%;
+				
+			}
+			#instructions_header{
+				display:flex;
+				flex-direction:row;
+				justify-content:space-between;
+				align-items:center;
+				align-content:center;
+			}
+			#navBar{
+				text-align:right;
+				padding:5px 0 5px 0;
+				border-bottom:2px solid black;
+
+			}
+			#navBar a{
+				cursor:pointer;
+			}
+			#instructions_wrapper{
+				height:100%;
+				width:300px;
+				display:none;
+			}
+
+			.drsElement{
+				position:absolute;
+				
+			}
+			.dragresize{
+				position:absolute;
+				width:2px;
+				height:100%;
+				font-size:1px;
+				background:black;
+				border:1px solid black;
+			}
+
+			.dragresize-mr {
+
+ 				right: -2px;
+ 				cursor: e-resize;
+			}
+
+			.something{
+				padding:5px;
+  				box-sizing:border-box;
+				width:300px;
+				word-wrap: break-word;
+				position:absolute;
+				top:0;
+				left:0;
+				display:none;
+				border-right:2px solid black;
+				height:100%;
+				background:rgba(255,255,255,1);
+				
+			}
+		</style>
+
+
+	</head>
+	<body>
+
+
+	<div id="instructions_wrapper" class="drsElement w3-pale-green">
+		<div id="instructions" style="">
+			<div class="dragresize dragresize-mr" style="visibility: inherit;"></div>
+			<div id="instructions_header" class=" w3-padding">
+				<h2>Instructions</h2>
+				<button onclick="myFunction2()" class="w3-button"> < </h2>
+			</div>
+			<div id="Demo1">
+				<button onclick="myFunction('Demo1')" class="w3-button w3-block w3-left-align w3-border-bottom">Add an option:</button>
+				<div id="Demo11" class="w3-hide w3-light-grey w3-padding">
+					<p>In the pop-up window insert a computer name, save and overwrite the options.js file</p>
+				</div>
+			</div>
+			<div id="Demo2">
+				<button onclick="myFunction('Demo2')" class="w3-button w3-block w3-left-align w3-border-bottom">Delete an option:</button>
+				<div id="Demo21" class="w3-hide w3-light-grey w3-padding">
+					<p>In the pop-up window select yes to delete an option in the list, save and overwrite the options.js file</p>
+				</div>
+			</div>
+			<div id="Demo3">
+				<button onclick="myFunction('Demo3')" class="w3-button w3-block w3-left-align w3-border-bottom">Edit an Option:</button>
+				<div id="Demo31" class="w3-hide w3-light-grey w3-padding">	
+					<p>In the textbox that relates to the computer you want to change the bios version for, input the bios version click the save button that corresponds to that option, save and overwrite the choosen .mac file</p>
+				</div>	
+			</div>
+			
+		</div>
+	</div>
+		<div id="outerWrapper">
+			<div>
+				<nav id="navBar">
+					<a id="addOptionButton">Add Option</a> |
+					<a id="instructionButton">Instructions</a>
+				</nav>
+				<div id="header">
+					<h1>Macro Updater</h1>
+				</div>
+				<div id="bodyWrapper">
+					<table id="myTable">
+					</table>
+				
+				</div>
+			</div>
+		</div>
+		<script src="./options.js"></script>
+		<script src="./text.js"></script>
+		<script>
+			const addOptionButton = document.getElementById("addOptionButton");
+			const instructionButton = document.getElementById("instructionButton");
+			const table = document.getElementById("myTable");
+
+			
+			
+			document.getElementById("addOptionButton").addEventListener("click" , () => {
+				let option = prompt("Please enter a machine name:");
+				if(option == null || option == ""){
+				} else {
+					options.push(option);
+					table.append(createRow(option));
+					
+					let dl = document.createElement("a");
+					dl.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(listToString()));
+					dl.setAttribute("download", ("options.js"));
+					dl.click();
+				}
+			});
+
+			function listToString(){
+				let text = `let options = [`;
+
+				for(let option of options){
+					text = text + `"` + option + `",`;
+				}
+
+				text = text + `];`
+				return text;
+			}
+
+			function createRow(option){
+				let row = document.createElement("tr");
+
+				let d0 = document.createElement("td");
+				let cancel = document.createElement("button");
+				cancel.innerText = "X";
+				cancel.addEventListener("click", () => {
+					if(window.confirm("Are you sure you want to delete this option?")){
+						let index = options.indexOf(option);
+						if(index > -1){
+							options.splice(index,1);
+						}
+						row.remove();
+
+						let dl = document.createElement("a");
+						dl.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(listToString()));
+						dl.setAttribute("download", ("options.js"));
+						dl.click();
+					}
+				});
+				d0.append(cancel);
+				
+				let d1 = document.createElement("td");
+				let label = document.createElement("label");
+				label.innerText = option;
+				d1.append(label);
+
+				let d2 = document.createElement("td");
+				let textBox = document.createElement("input");
+				textBox.type = "text";
+				d2.append(textBox);
+				
+				let d3 = document.createElement("td");
+				let button = document.createElement("button");
+				button.innerText = "Save";
+				button.addEventListener("click", () => {
+					if(textBox.value != ""){
+						let dl = document.createElement("a");
+						dl.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(textToSaveToFile(option,textBox.value)));
+						dl.setAttribute("download", (option + ".mac"));
+						dl.click();
+					} else {
+						textBox.placeholder = "Please enter a value";
+					}
+				}, false);
+				d3.append(button);
+				
+				row.append(d0,d1,d2,d3);
+				return row;
+			}
+
+			window.onload = function(){
+				for(let option of options){
+					table.append(createRow(option));
+				}
+			};
+			
+
+
+			function myFunction(id) {
+				var x = document.getElementById(id);
+				var y = document.getElementById(id + "1");
+
+				if (y.className.indexOf("w3-show") == -1) {
+					x.className += " w3-pale-blue";
+					y.className += " w3-show";
+				} else { 
+					x.className = x.className.replace(" w3-pale-blue", "");
+					y.className = y.className.replace(" w3-show", "");
+				}
+			}
+
+			instructionButton.addEventListener("click", myFunction2);
+
+			function myFunction2(){
+				console.log("calling instruction button");
+				let x = document.getElementById("instructions_wrapper");
+				console.log(x.style.display);
+				if (x.style.display != "block"){
+					console.log("does not equal none");
+					x.style.display = "block";
+				} else {
+					console.log("does equal none");
+					x.style.display = "none";
+				}
+			}
+			
+
+
+		</script>
+	</body>
+</html>
